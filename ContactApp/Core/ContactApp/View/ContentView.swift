@@ -40,6 +40,9 @@ struct ContentView: View {
                     .navigationTitle("Contacts")
                     .navigationBarTitleDisplayMode(.large)
                     .searchable(text: $searchText, prompt: "Search")
+                    .onChange(of: searchText) {
+                        contactVM.filterByNameUsernameEmail(for: searchText)
+                    }
                     .toolbar {
                         
                         ToolbarItem(placement: .topBarTrailing) {
@@ -70,7 +73,7 @@ struct ContentView: View {
                             .presentationBackground(.regularMaterial) 
                     }
 
-                    .overlay {   // overlays don't break navigation titles
+                    .overlay {
                         switch contactVM.status {
                         case .isLoading:
                             ProgressView("Loading Contacts...")

@@ -6,7 +6,7 @@
 //
 import Foundation
 
-struct User: Decodable, Identifiable, Encodable {
+struct User: Decodable, Identifiable, Encodable, Hashable {
     
     // this fields will be whst we should expect form the data received
     let id : Int

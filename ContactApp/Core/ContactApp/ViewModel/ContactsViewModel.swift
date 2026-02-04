@@ -29,6 +29,7 @@ class ContactsViewModel {
     var errorMessageFound: String?
     
     var users : [User] = []
+    var allUsers: [User] = [];
     
     func fetchContacts() async {
         
@@ -40,6 +41,7 @@ class ContactsViewModel {
         do {
             let fetchedAPIusers = try await contactService.fetchAllUserContact()
             self.users = fetchedAPIusers
+            self.allUsers = fetchedAPIusers
             status = .success
             
             // saved updated list to our coredata
@@ -63,6 +65,7 @@ class ContactsViewModel {
         // in case we have users in our coredata
         if !fetchedCasedUser.isEmpty {
             self.users = fetchedCasedUser
+            self.allUsers = fetchedCasedUser
             status = .success
         }
     }
@@ -118,6 +121,18 @@ class ContactsViewModel {
             status = .success
         } catch {
             status = .failed(error.localizedDescription)
+        }
+    }
+    //
+    func filterByNameUsernameEmail(for search: String) {
+        if search.isEmpty {
+            users = allUsers
+        } else {
+            users = allUsers.filter { user in
+                user.name.localizedCaseInsensitiveContains(search) ||
+                user.username.localizedCaseInsensitiveContains(search) ||
+                user.email.localizedCaseInsensitiveContains(search)
+            }
         }
     }
     

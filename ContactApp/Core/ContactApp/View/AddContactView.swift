@@ -17,7 +17,7 @@ struct AddContactView: View {
     @State private var phone = ""
     @State private var email = ""
     @State private var website = ""
-    
+    @State var isContactDidiChange = false
     
     var body: some View {
         NavigationStack {

@@ -10,10 +10,14 @@ import SwiftUI
 struct EditContactView: View {
     @Environment(\.dismiss) var dismiss
     @State private var user: User
+    @State var onUserDetailsDidChange = false
+    @State var showAlert = false
+    private let initialUser: User
     
     // this will allow us to use the very same object recieved and manipulate
     init(user: User) {
         _user = State(initialValue: user)
+        self.initialUser = user
     }
     
     var body: some View {
@@ -63,9 +67,12 @@ struct EditContactView: View {
                 
               // this is our clocing bracket form
             }
-            
+           
+        
             Button(role: .destructive) {
-                print("we are deleteing user : \(user.name)")
+                if onUserDetailsDidChange {
+                    print("DEBUG:: now we can delete : \(user.name)")
+                }
             } label: {
                 Text("Delete Contact")
                     .font(.headline)
@@ -79,11 +86,20 @@ struct EditContactView: View {
             .padding(.top, 10)
             .padding(.bottom, 35)
             
-        }.toolbar {
+        }
+        .onChange(of: user) { oldValue, newValue in
+            onUserDetailsDidChange = newValue != initialUser
+        }
+        .toolbar {
             
             ToolbarItem(placement: .topBarLeading) {
+                // we can not cancel is we change anything
                 Button("Cancel") {
-                    dismiss()
+                    if onUserDetailsDidChange {
+                        showAlert = true
+                    } else {
+                        dismiss()
+                    }
                 }
             }
             
@@ -94,7 +110,10 @@ struct EditContactView: View {
                     dismiss()
                 }
                 .fontWeight(.semibold)
-                .disabled(user.name.isEmpty || user.email.isEmpty)
+                .disabled(!onUserDetailsDidChange)
+                .opacity(onUserDetailsDidChange ? 1.0 : 0.5)
+                
+                
             }
             
         }
