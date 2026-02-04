@@ -82,27 +82,31 @@ JSONPlaceholder is a fake API - it won't actually persist your changes, but will
 * Tap sort button (top-right) to change sorting
 
 
-## Project Structure
-\`\`\`
-ContactApp/
-├── App/
-│   └── ContactApp.swift          # App entry point
-├── Core/
-│   └── ContactApp/
-│       ├── CoreData/             # CoreData persistence layer
-│       ├── Model/
-│       │   └── UserModel.swift   # Data models
-│       ├── Networking/
-│       │   ├── APIError.swift    # Error handling
-│       │   ├── ContactServices.swift # API service
-│       │   └── Endpoint.swift    # API endpoints
-│       ├── View/
-│       │   ├── AddContactView.swift
-│       │   ├── ContactRowView.swift
-│       │   ├── ContentView.swift
-│       │   └── EditContactView.swift
-│       └── ViewModel/
-│           └── ContactsViewModel.swift # Business logic
-└── Tests/                        # Unit tests
-\`\`\`
+## File Descriptions
 
+### App/
+- **ContactApp.swift** - Main application file, sets up the app lifecycle
+
+### Core/ContactApp/CoreData/
+- CoreData related files (`.xcdatamodeld`, persistence controllers, etc.)
+
+### Core/ContactApp/Model/
+- **UserModel.swift** - Data model structs for API responses and CoreData entities
+
+### Core/ContactApp/Networking/
+- **APIError.swift** - Custom error types for API failures
+- **ContactServices.swift** - Main networking service for CRUD operations
+- **Endpoint.swift** - URL construction and API endpoint definitions
+
+### Core/ContactApp/View/
+- **ContentView.swift** - Main screen with contact list, search, sort
+- **AddContactView.swift** - Form to add new contacts
+- **EditContactView.swift** - Form to edit existing contacts
+- **ContactRowView.swift** - Reusable row component for contact list
+
+### Core/ContactApp/ViewModel/
+- **ContactsViewModel.swift** - MVVM ViewModel managing business logic and state
+
+### Tests/
+- Unit test files for testing ViewModel and Services
+EOF
