@@ -2,28 +2,19 @@
 
 Contacts Manager App
 
-Overview
+### Overview
 A SwiftUI-based contacts management app that allows you to perform CRUD operations on contacts using JSONPlaceholder API with CoreData for local persistence.
 
-Features
-* View contact list with pull-to-refresh
+### Main Features
+1. **View Contacts**: All contacts are displayed in a list
+2. **Search**: Type in the search bar to filter contacts
+3. **Sort**: Tap sort button (top-right) to change sorting
+4. **Pull-to-Refresh**: Pull down to refresh from API
+5. **Add Contact**: Tap + button to add new contact
+6. **Edit Contact**: Tap any contact to view/edit details
+7. **Delete**: Swipe left on a contact to delete
 
-* Add new contacts
-
-* Edit existing contacts
-
-* Delete contacts
-
-* Search contacts by name or email
-
-* Sort contacts (name, email, username)
-
-* Offline support with CoreData
-
-* Unit tests included
-
-
-Technical Details: 
+### Technical Details: 
 
 Architecture: MVVM
 
@@ -35,14 +26,14 @@ API: JSONPlaceholder.typicode.com/users/
 
 Dependencies: None (No external libraries)
 
-How to Run the App
+### How to Run the App
 Prerequisites:
 
 macOS with Xcode 15 or later
 
 iOS 17.0+ simulator or device
 
-Steps
+### Steps
 
 - Clone or download the project to your Mac
 
@@ -62,7 +53,7 @@ Steps
 
 - Wait for the app to build and launch in the simulator
 
-API Endpoints Used: 
+### API Endpoints Used: 
 - GET https://jsonplaceholder.typicode.com/users/ - Fetch contacts
 
 - POST https://jsonplaceholder.typicode.com/users/ - Add contact
@@ -71,11 +62,11 @@ API Endpoints Used:
 
 - DELETE https://jsonplaceholder.typicode.com/users/{id} - Delete contact
 
-Note on API Limitations
+### Note on API Limitations
 JSONPlaceholder is a fake API - it won't actually persist your changes, but will return mock responses. The app uses CoreData to maintain local changes.
 
 
-App Usage:
+### App Usage:
 * Main Screen: Shows all contacts with search bar and sort options
 
 * Pull down to refresh contacts from API
@@ -91,4 +82,27 @@ App Usage:
 * Tap sort button (top-right) to change sorting
 
 
+## Project Structure
+\`\`\`
+ContactApp/
+├── App/
+│   └── ContactApp.swift          # App entry point
+├── Core/
+│   └── ContactApp/
+│       ├── CoreData/             # CoreData persistence layer
+│       ├── Model/
+│       │   └── UserModel.swift   # Data models
+│       ├── Networking/
+│       │   ├── APIError.swift    # Error handling
+│       │   ├── ContactServices.swift # API service
+│       │   └── Endpoint.swift    # API endpoints
+│       ├── View/
+│       │   ├── AddContactView.swift
+│       │   ├── ContactRowView.swift
+│       │   ├── ContentView.swift
+│       │   └── EditContactView.swift
+│       └── ViewModel/
+│           └── ContactsViewModel.swift # Business logic
+└── Tests/                        # Unit tests
+\`\`\`
 
