@@ -13,6 +13,7 @@ struct ContentView: View {
     @State var showAddContactView = false
     @State var isAscendingOrder: Bool =  false
     @State var contactVM = ContactsViewModel()
+
     
     @State var searchText = ""
     var body: some View {
@@ -56,7 +57,9 @@ struct ContentView: View {
                         
                         ToolbarItem(placement: .topBarLeading) {
                             Button {
+//                                contactVM.sortCurrentUsers(ascendingOrder: isAscendingOrder.toggle())
                                 isAscendingOrder.toggle()
+                                contactVM.sortCurrentUsers(ascendingOrder: isAscendingOrder)
                             } label: {
                                 Label(
                                     isAscendingOrder ? "A–Z" : "Z–A",

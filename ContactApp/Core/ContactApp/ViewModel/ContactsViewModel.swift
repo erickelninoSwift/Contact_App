@@ -136,4 +136,13 @@ class ContactsViewModel {
         }
     }
     
+    func sortCurrentUsers (ascendingOrder: Bool) {
+        
+        users.sort {
+            ascendingOrder
+            ? $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending
+            : $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedDescending
+        }
+    }
+    
 }

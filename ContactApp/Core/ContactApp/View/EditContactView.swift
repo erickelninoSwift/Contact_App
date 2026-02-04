@@ -90,6 +90,10 @@ struct EditContactView: View {
         .onChange(of: user) { oldValue, newValue in
             onUserDetailsDidChange = newValue != initialUser
         }
+        .alert("Unsaved Chnages", isPresented: $showAlert, actions: {
+            Button("Stay", role: .cancel) {}
+            Button("Ignore Changes", role: .destructive) { dismiss() }
+        })
         .toolbar {
             
             ToolbarItem(placement: .topBarLeading) {
