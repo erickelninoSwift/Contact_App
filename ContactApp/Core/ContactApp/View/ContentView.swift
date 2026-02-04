@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct ContentView: View {
-    
-    @State var isDarkMode = true
+    // this was later consider after futher reaseach as i was about to implement Core data
+    @AppStorage("isDarkMode") private var isDarkMode: Bool = true
     @State var showAddContactView = false
     @State var isAscendingOrder: Bool =  false
     @State var contactVM = ContactsViewModel()
@@ -37,7 +37,6 @@ struct ContentView: View {
                             }
                         }
                     }
-                    .listStyle(.plain)
                     .navigationTitle("Contacts")
                     .navigationBarTitleDisplayMode(.large)
                     .searchable(text: $searchText, prompt: "Search")
@@ -66,6 +65,7 @@ struct ContentView: View {
                     }
                     .sheet(isPresented: $showAddContactView) {
                             AddContactView()
+                            .environment(contactVM)
                             .presentationDetents([.medium])
                             .presentationBackground(.regularMaterial) 
                     }

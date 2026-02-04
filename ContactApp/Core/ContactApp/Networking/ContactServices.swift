@@ -76,6 +76,42 @@ struct ContactsService {
         }
     }
     
+    func createUser(of newUser: User) async throws -> User {
+        guard let url = Endpoint.contacts.url else { throw APIError.invalidURL }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = try JSONEncoder().encode(newUser)
+        
+        let (data, response) = try await URLSession.shared.data(for: request)
+        
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw APIError.invalidResponse
+        }
+        // i want to log everything to see if it was successfulk
+        
+        print(" CREATE USER RESPONSE")
+        print("Status Code:", httpResponse.statusCode)
+        print("Headers:", httpResponse.allHeaderFields)
+        
+        if let body = String(data: data, encoding: .utf8) {
+            print("Body:", body)
+        }
+        
+        guard let response = response as? HTTPURLResponse,
+              response.statusCode == 201 else {
+            throw APIError.invalidResponse
+        }
+        
+        do {
+            let createdUser = try JSONDecoder().decode(User.self, from: data)
+            return createdUser
+        } catch {
+            throw APIError.decodingError
+        }
+    }
+    
      // this one if for deleting outr user
     func deleteUser(of userId: Int) async throws -> Bool {
         guard let url = Endpoint.contact(id: userId).url else { throw APIError.invalidURL }

@@ -8,13 +8,16 @@
 import SwiftUI
 
 struct AddContactView: View {
+    
+    @Environment(ContactsViewModel.self) var viewModel
+    @Environment(\.dismiss) var dismiss
+    
     @State private var name = ""
     @State private var username = ""
     @State private var phone = ""
     @State private var email = ""
     @State private var website = ""
     
-    @Environment(\.dismiss) var dismiss
     
     var body: some View {
         NavigationStack {
@@ -69,13 +72,31 @@ struct AddContactView: View {
                 }
                 
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Save") {
-                        // Save the contact
-                        print("Saving contact...")
-                        dismiss()
+                    Button {
+                        Task {
+                            await viewModel.createNewContact(
+                                name: name,
+                                username: username,
+                                email: email,
+                                phone: phone,
+                                website: website
+                            )
+                        }
+                        // in case we have succeed
+                        if viewModel.status == .success {
+                            dismiss()
+                        }
+                    } label: {
+                        if viewModel.status == .isLoading {
+                            ProgressView()
+                        } else {
+                            Text("Save")
+                                .fontWeight(.semibold)
+                            
+                        }
                     }
                     .fontWeight(.semibold)
-                    .disabled(name.isEmpty || email.isEmpty)
+                    .disabled(name.isEmpty || email.isEmpty || viewModel.status == .isLoading)
                 }
             }
         }
@@ -84,4 +105,5 @@ struct AddContactView: View {
 
 #Preview {
     AddContactView()
+        .environment(ContactsViewModel())
 }
