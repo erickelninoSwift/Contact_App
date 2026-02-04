@@ -12,6 +12,7 @@ struct EditContactView: View {
     @State private var user: User
     @State var onUserDetailsDidChange = false
     @State var showAlert = false
+    @State var showDeleteContactAlert = false
     private let initialUser: User
     
     // this will allow us to use the very same object recieved and manipulate
@@ -70,9 +71,7 @@ struct EditContactView: View {
            
         
             Button(role: .destructive) {
-                if onUserDetailsDidChange {
-                    print("DEBUG:: now we can delete : \(user.name)")
-                }
+              showDeleteContactAlert = true
             } label: {
                 Text("Delete Contact")
                     .font(.headline)
@@ -93,6 +92,14 @@ struct EditContactView: View {
         .alert("Unsaved Chnages", isPresented: $showAlert, actions: {
             Button("Stay", role: .cancel) {}
             Button("Ignore Changes", role: .destructive) { dismiss() }
+        })
+        .alert("Delete \(user.name) ?", isPresented: $showDeleteContactAlert, actions: {
+            Button("No", role: .cancel) {}
+            
+            Button("Yes", role: .destructive) {
+                print("user should be deleted")
+                
+            }
         })
         .toolbar {
             

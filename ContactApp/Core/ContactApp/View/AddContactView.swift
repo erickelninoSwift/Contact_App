@@ -96,7 +96,8 @@ struct AddContactView: View {
                         }
                     }
                     .fontWeight(.semibold)
-                    .disabled(name.isEmpty || email.isEmpty || viewModel.status == .isLoading)
+                    .disabled(name.isEmpty || email.isEmpty || viewModel.status == .isLoading
+                              || phone.isEmpty || website.isEmpty)
                 }
             }
         }
