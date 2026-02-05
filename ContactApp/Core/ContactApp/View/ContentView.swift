@@ -27,6 +27,7 @@ struct ContentView: View {
                             ForEach(contactVM.users) { user in
                                 NavigationLink {
                                     EditContactView(user: user)
+                                        .environment(contactVM)
                                         .navigationTitle("Edit Contact")
                                         .navigationBarTitleDisplayMode(.inline)
                                         .navigationBarBackButtonHidden()
@@ -34,9 +35,22 @@ struct ContentView: View {
                                     
                                 } label: {
                                     ContactRowView(user: user)
+                    
+                                }.swipeActions {
+                                    Button {
+                                        // async function
+                                        Task {
+                                            await contactVM.deleteContact(userId: user.id)
+                                        }
+                                    } label: {
+                                        Image(systemName: "trash")
+                                    }.tint(.red)
                                 }
                             }
                         }
+                    }
+                    .refreshable {
+                        await contactVM.fetchContacts()
                     }
                     .navigationTitle("Contacts")
                     .navigationBarTitleDisplayMode(.large)

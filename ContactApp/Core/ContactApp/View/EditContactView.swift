@@ -9,6 +9,7 @@ import SwiftUI
 
 struct EditContactView: View {
     @Environment(\.dismiss) var dismiss
+    @Environment(ContactsViewModel.self) var viewModel
     @State private var user: User
     @State var onUserDetailsDidChange = false
     @State var showAlert = false
@@ -97,7 +98,11 @@ struct EditContactView: View {
             Button("No", role: .cancel) {}
             
             Button("Yes", role: .destructive) {
-                print("user should be deleted")
+                //
+                Task {
+                    await viewModel.deleteContact(userId: user.id)
+                    dismiss()
+                }
                 
             }
         })
@@ -132,6 +137,9 @@ struct EditContactView: View {
     }
 }
 
+
 #Preview {
+    
     EditContactView(user: .init(id: 10, name: "Erick", username: "Elnino", email: "erick@yahoo.com", phone: "0841124598", website: "www.elnino.com"))
+        .environment(ContactsViewModel())
 }
