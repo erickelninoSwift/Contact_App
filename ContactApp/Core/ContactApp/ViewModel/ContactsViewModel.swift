@@ -19,9 +19,9 @@ class ContactsViewModel {
         case success
         case failed(String)
     }
+    var sortingType: Bool = false
     // only the viewmodel wil be able to change this
     var status: serviceFetchStatus = .notStarted
-    
     private let contactService = ContactsService()
     // this is our coredata instance
     private let coreData = CoreDataUserManager.shared
@@ -30,44 +30,61 @@ class ContactsViewModel {
     
     var users : [User] = []
     var allUsers: [User] = [];
+    var userFoundFromCoredata: [User] = []
     
-    func fetchContacts() async {
-        
+    func fetchContacts(isPullrefreshTriggered: Bool = false) async {
         status = .isLoading
         
-        // first check core data
-        fetchedUserCached()
+        // pull refresh
+        if isPullrefreshTriggered {
+            await fetchFromAPIAndReplace()
+            return
+        }
         
+        let cachedUsers = coreData.fetchAllUsers()
+        
+        if !cachedUsers.isEmpty {
+            print("Loaded users from Core Data")
+            self.users = cachedUsers
+            self.allUsers = cachedUsers
+            // the data will return as sorted based on the previous value that the user have selected
+            sortCurrentUsers(ascendingOrder: sortingType)
+            status = .success
+        } else {
+            print("Core Data empty → Fetching from API")
+            await fetchFromAPIAndReplace()
+        }
+       
+    }
+    //
+    private func fetchFromAPIAndReplace() async {
         do {
             let fetchedAPIusers = try await contactService.fetchAllUserContact()
+            
+            // Update UI
             self.users = fetchedAPIusers
             self.allUsers = fetchedAPIusers
+            
+            // Replace Core Data
+            coreData.replaceAllUsers(with: fetchedAPIusers)
+            
             status = .success
             
-            // saved updated list to our coredata
-            fetchedAPIusers.forEach { user in
-                self.coreData.editAndUpdateUser(user: user)
-            }
-    
-        }catch{
+        } catch {
             status = .failed(error.localizedDescription)
         }
     }
     
     // coredata fucntion to fetch users saved
     
-    func fetchedUserCached() {
+    func fetchedUserCached() -> Bool {
         let fetchedCasedUser = coreData.fetchAllUsers()
-        
-        
-        print("DEBUG COREDATA:: ", fetchedCasedUser)
-        
         // in case we have users in our coredata
-        if !fetchedCasedUser.isEmpty {
-            self.users = fetchedCasedUser
-            self.allUsers = fetchedCasedUser
-            status = .success
+        if fetchedCasedUser.count > 0 {
+            self.userFoundFromCoredata = fetchedCasedUser
+            return true
         }
+        return false
     }
     
    // MARK: -- Add new contact
@@ -75,19 +92,20 @@ class ContactsViewModel {
     func createNewContact(name:String, username: String, email: String, phone: String, website: String) async {
         status = .isLoading
         let newUserId = (users.map { $0.id }.max() ?? 0) + 1
-        
         let user = User(id: newUserId, name: name, username: username, email: email, phone: phone, website: website)
         
         do {
-            let response = try await contactService.createUser(of: user)
-            print("success :: \(response)")
+            let _ = try await contactService.createUser(of: user)
             users.insert(user, at: 0)
+            self.coreData.createuser(user: user)
             status = .success
         }catch {
             status = .failed(error.localizedDescription)
         }
     }
-    
+    func setSortingType(type: Bool) {
+         sortingType = type
+    }
     // MARK: - Delete Contact
     func deleteContact(userId: Int) async {
         status = .isLoading
@@ -97,8 +115,9 @@ class ContactsViewModel {
             
             if success {
                 users.removeAll { $0.id == userId }
-                print("DELETE SUCCESS: User ID \(userId) removed")
                 status = .success
+                //
+                self.coreData.deleteUser(userId: userId)
             }
         } catch {
             status = .failed(error.localizedDescription)
@@ -116,6 +135,8 @@ class ContactsViewModel {
             // Replace user in array
             if let index = users.firstIndex(where: { $0.id == user.id }) {
                 users[index] = updatedUser
+                // update coredata with the new user value
+                self.coreData.editAndUpdateUser(user: users[index])
             }
             
             status = .success

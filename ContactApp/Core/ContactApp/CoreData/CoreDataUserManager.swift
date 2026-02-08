@@ -15,8 +15,25 @@ class CoreDataUserManager {
     
     func fetchAllUsers() -> [User] {
         let request: NSFetchRequest<CDUser> = CDUser.fetchRequest()
+        
+        print("coredata data :\(request)")
         do {
             let cdUsers = try context.fetch(request)
+            
+            print("=== CORE DATA DUMP ===")
+            print("Total users in CoreData: \(cdUsers.count)")
+            
+            for (index, entity) in cdUsers.enumerated() {
+                print("User \(index):")
+                print("  ID: \(entity.id)")
+                print("  Name: \(entity.name ?? "nil")")
+                print("  Email: \(entity.email ?? "nil")")
+                print("  Phone: \(entity.phone ?? "nil")")
+                print("  Username: \(entity.username ?? "nil")")
+                print("  Website: \(entity.website ?? "nil")")
+                print("---")
+            }
+            print("=====================")
             return cdUsers.map { $0.converetdUserObject() }
         } catch {
             print("Failed to fetch from Core Data: \(error)")
@@ -63,6 +80,35 @@ class CoreDataUserManager {
             context.delete(cdUser)
             saveContext()
         }
+    }
+    
+    func deleteAllUsers() {
+        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = CDUser.fetchRequest()
+        let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+        
+        do {
+            try context.execute(deleteRequest)
+            try context.save()
+            print("All users deleted from Core Data")
+        } catch {
+            print("Failed to delete all users: \(error)")
+        }
+    }
+    // after removing all our currentcoredata data we need to replace all users
+    func replaceAllUsers(with users: [User]) {
+        deleteAllUsers()
+        
+        for user in users {
+            let cdUser = CDUser(context: context)
+            cdUser.id = Int64(user.id)
+            cdUser.name = user.name
+            cdUser.username = user.username
+            cdUser.email = user.email
+            cdUser.phone = user.phone
+            cdUser.website = user.website
+        }
+        
+        saveContext()
     }
     
 

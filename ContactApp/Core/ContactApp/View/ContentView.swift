@@ -10,11 +10,14 @@ import SwiftUI
 struct ContentView: View {
     // this was later consider after futher reaseach as i was about to implement Core data
     @AppStorage("isDarkMode") private var isDarkMode: Bool = true
+    @AppStorage("isAscendingOrder") private var isAscendingOrder: Bool = false
+    @AppStorage("lastTimeRefreshed") private var lastUpdated: Double = 0
+    
     @State var showAddContactView = false
-    @State var isAscendingOrder: Bool =  false
+//    @State var isAscendingOrder: Bool =  false
     @State var contactVM = ContactsViewModel()
 
-    
+
     @State var searchText = ""
     var body: some View {
         TabView {
@@ -31,7 +34,7 @@ struct ContentView: View {
                                         .navigationTitle("Edit Contact")
                                         .navigationBarTitleDisplayMode(.inline)
                                         .navigationBarBackButtonHidden()
-                                    
+                        
                                     
                                 } label: {
                                     ContactRowView(user: user)
@@ -49,16 +52,34 @@ struct ContentView: View {
                             }
                         }
                     }
-                    .refreshable {
-                        await contactVM.fetchContacts()
+                    .onAppear {
+                        contactVM.setSortingType(type: isAscendingOrder)
                     }
-                    .navigationTitle("Contacts")
+                    .onChange(of: isAscendingOrder, { _, newValue in
+                        contactVM.sortCurrentUsers(ascendingOrder: newValue)
+                    })
+                    .refreshable {
+                        await contactVM.fetchContacts(isPullrefreshTriggered: true)
+                        lastUpdated = Date().timeIntervalSince1970
+                    }
+//                    .navigationTitle("Contacts")
                     .navigationBarTitleDisplayMode(.large)
                     .searchable(text: $searchText, prompt: "Search")
                     .onChange(of: searchText) {
                         contactVM.filterByNameUsernameEmail(for: searchText)
                     }
                     .toolbar {
+                        
+                        ToolbarItem(placement: .principal) {
+                            VStack(spacing: 2) {
+                                Text("Contacts")
+                                    .font(.headline)
+                                
+                                Text(lastRefreshText)
+                                    .font(.caption2)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
                         
                         ToolbarItem(placement: .topBarTrailing) {
                             Button {
@@ -115,7 +136,11 @@ struct ContentView: View {
                     }
                     .task {
                         if contactVM.status == .notStarted {
-                            await contactVM.fetchContacts()
+                            await contactVM.fetchContacts(isPullrefreshTriggered: false)
+                            if contactVM.status == .success {
+                                
+                                lastUpdated = Date().timeIntervalSince1970
+                            }
                         }
                     }
                 }
@@ -145,6 +170,20 @@ struct ContentView: View {
             }
         }.preferredColorScheme(isDarkMode ? .dark : .light)
         
+    }
+}
+
+// our functions will be here
+extension ContentView {
+    
+    private var lastRefreshText: String {
+        guard lastUpdated > 0 else { return "Never updated" }
+        
+        let date = Date(timeIntervalSince1970: lastUpdated)
+        let formatter = RelativeDateTimeFormatter()
+        formatter.unitsStyle = .full
+        
+        return "Last updated \(formatter.localizedString(for: date, relativeTo: Date()))"
     }
 }
 
