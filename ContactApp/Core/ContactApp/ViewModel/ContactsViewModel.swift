@@ -35,13 +35,14 @@ class ContactsViewModel {
     func fetchContacts(isPullrefreshTriggered: Bool = false) async {
         status = .isLoading
         
+        let cachedUsers = coreData.fetchAllUsers()
+        
         // pull refresh
-        if isPullrefreshTriggered {
+        if isPullrefreshTriggered && cachedUsers.count == 0 {
             await fetchFromAPIAndReplace()
             return
         }
-        
-        let cachedUsers = coreData.fetchAllUsers()
+    
         
         if !cachedUsers.isEmpty {
             print("Loaded users from Core Data")
