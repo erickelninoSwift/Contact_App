@@ -122,7 +122,9 @@ struct EditContactView: View {
             ToolbarItem(placement: .topBarTrailing) {
                 Button("Save") {
                     // Save the contact
-                    print("Saving contact...")
+                    Task {
+                         await viewModel.updateContact(user: user)
+                    }
                     dismiss()
                 }
                 .fontWeight(.semibold)

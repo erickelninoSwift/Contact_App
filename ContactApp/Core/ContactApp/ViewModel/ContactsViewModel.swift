@@ -134,9 +134,11 @@ class ContactsViewModel {
             
             // Replace user in array
             if let index = users.firstIndex(where: { $0.id == user.id }) {
-                users[index] = updatedUser
-                // update coredata with the new user value
-                self.coreData.editAndUpdateUser(user: users[index])
+                //
+                 users[index] = updatedUser
+                 allUsers[index] = updatedUser
+                 self.coreData.editAndUpdateUser(user: users[index])
+                
             }
             
             status = .success
