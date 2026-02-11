@@ -145,6 +145,9 @@ struct ContentView: View {
                     }
                 }
             }
+            Tab ("Favourites", systemImage: "heart.fill") {
+               Text("Here we will display our fav")
+            }
             
             Tab ("Settings", systemImage: "gearshape.fill") {
                 NavigationStack {
@@ -168,6 +171,7 @@ struct ContentView: View {
                     .navigationTitle("Settings")
                 }
             }
+            
         }.preferredColorScheme(isDarkMode ? .dark : .light)
         
     }
