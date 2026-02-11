@@ -55,7 +55,7 @@ struct ContactsService {
     
     // update user
     func updateUser(of userId: Int, updatedUser: User) async throws -> User {
-        //
+        
         guard let url = Endpoint.contact(id: userId).url else { throw APIError.invalidURL }
         
         var request = URLRequest(url: url)

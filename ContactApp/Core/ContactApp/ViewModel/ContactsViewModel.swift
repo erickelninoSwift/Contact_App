@@ -22,6 +22,7 @@ class ContactsViewModel {
     var sortingType: Bool = false
     // only the viewmodel wil be able to change this
     var status: serviceFetchStatus = .notStarted
+    
     private let contactService = ContactsService()
     // this is our coredata instance
     private let coreData = CoreDataUserManager.shared
@@ -75,6 +76,7 @@ class ContactsViewModel {
             status = .failed(error.localizedDescription)
         }
     }
+
     
     // coredata fucntion to fetch users saved
     

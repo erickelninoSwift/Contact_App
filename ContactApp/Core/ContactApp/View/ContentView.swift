@@ -145,9 +145,18 @@ struct ContentView: View {
                     }
                 }
             }
-            Tab ("Favourites", systemImage: "heart.fill") {
-               Text("Here we will display our fav")
-            }
+            
+//            Tab ("Favourites", systemImage: "heart.fill") {
+//                NavigationStack {
+//                    
+//                    List {
+//                        ForEach(contactVM.allUsers) { user in
+//                            
+//                            ContactRowView(user: user)
+//                        }
+//                    }.navigationTitle("Favourites")
+//                }
+//            }
             
             Tab ("Settings", systemImage: "gearshape.fill") {
                 NavigationStack {
@@ -171,7 +180,6 @@ struct ContentView: View {
                     .navigationTitle("Settings")
                 }
             }
-            
         }.preferredColorScheme(isDarkMode ? .dark : .light)
         
     }
