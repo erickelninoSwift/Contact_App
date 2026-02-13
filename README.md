@@ -78,4 +78,4 @@ JSONPlaceholder is a fake API - it won't actually persist your changes, but will
 - **CoreData**: Local persistence layer
 
 ### Tests/
-- Unit test files for testing ViewModel and Services
+- Unit test files for testing search / filter and sorting features Only
