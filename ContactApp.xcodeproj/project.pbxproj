@@ -43,6 +43,11 @@
 			path = ContactAppUnitTests;
 			sourceTree = "<group>";
 		};
+		943BDC042F3F293500955CC1 /* Pictures */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Pictures;
+			sourceTree = "<group>";
+		};
 		94C2766F2F2EFE2B0038DE47 /* ContactApp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = ContactApp;
@@ -85,6 +90,7 @@
 		94C276642F2EFE2A0038DE47 = {
 			isa = PBXGroup;
 			children = (
+				943BDC042F3F293500955CC1 /* Pictures */,
 				94C2766F2F2EFE2B0038DE47 /* ContactApp */,
 				943BDB672F3BE08C00955CC1 /* ContactAppUnitTests */,
 				94C2766E2F2EFE2B0038DE47 /* Products */,
@@ -181,6 +187,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
+				943BDC042F3F293500955CC1 /* Pictures */,
 				94C2766F2F2EFE2B0038DE47 /* ContactApp */,
 			);
 			name = ContactApp;
